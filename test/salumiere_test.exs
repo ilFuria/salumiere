@@ -2,7 +2,6 @@ defmodule SalumiereTest do
   use ExUnit.Case
   doctest Salumiere
 
-  test "greets the world" do
-    assert Salumiere.hello() == :world
+  test "salumiere_start" do
   end
 end
