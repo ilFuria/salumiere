@@ -18,6 +18,7 @@ spec=%{
 DynamicSupervisor.start_child(__MODULE__,spec)
   posizione=Salumiere.attach(salumiere)
   Cliente.accodati(cliente,posizione)
+SalumiereClientiRegistry.registra(cliente, salumiere)
   end
 
 def chiudi(name) do
