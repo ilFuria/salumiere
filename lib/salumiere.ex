@@ -1,24 +1,26 @@
 defmodule Salumiere do
 
 use GenServer
-  def start_link do
-GenServer.start_link(__MODULE__,[])
+  def start_link(name) do
+GenServer.start_link(__MODULE__,[], name: via_tuple(name))
   end
   def init(_) do
 {:ok, 0}
 end
-  def attach(process_id) do
-GenServer.call(process_id,{:attach})
+  def attach(name) do
+GenServer.call(via_tuple(name),{:attach})
   end
-  def advance(process_id) do
-GenServer.cast(process_id,{:pop})
+  def advance(name) do
+GenServer.cast(via_tuple(name),{:pop})
   end
   def handle_call({:attach},_from, state) do
-  newstate=state+1
-{:reply, newstate, newstate}
+{:reply, state+1, state+1}
 end
-def handle_cast({:pop},_from,state) do
-  newstate=state-1
-  {:noreply,newstate}
+def handle_cast({:pop},state) do
+  {:noreply,state-1}
   end
+
+defp via_tuple(name) do
+{:via, Registry,{Salumiere.Registry,name}}
+end
     end
