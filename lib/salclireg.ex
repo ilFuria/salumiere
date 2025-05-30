@@ -2,7 +2,7 @@ defmodule SalumiereClientiRegistry do
 use GenServer
 
 def start_link(_) do
-GenServer.start_link(__MODULE__,%{}, name:__MODULE__)
+GenServer.start_link(__MODULE__,%{}, name: __MODULE__)
 end
 
 def registra(cliente, nuovo_salumiere) do
@@ -27,8 +27,11 @@ stato=Map.update(stato, nuovo_salumiere, MapSet.new([cliente]), &MapSet.put(&1,c
 end
 
 def handle_cast({:deregistra, cliente}, stato) do
-stato=Enum.reduce(stato,%{}, fn{s,ste}, acc ->
-nuovo_set=MapSet.delete(set,cliente)
+stato=Enum.reduce(stato,%{}, fn{s,set}, acc ->
+nuovo_set=Enum.reject(set,fn nome ->
+Registry.lookup(Cliente.Registry, nome)
+|>Enum.any?(fn {pid, _}->pid==cliente end)
+end)
 Map.put(acc,s,nuovo_set)
 end)
 {:noreply, stato}

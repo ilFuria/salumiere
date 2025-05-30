@@ -17,14 +17,14 @@ def handle_cast({:accodati, numero},_state) do
 {:noreply, numero}
 end
 
-def handle_info(:avanti, stato) do
-# todo - terminazione
+def handle_info(:avanti, stato) when stato>1 do
 {:noreply, stato-1}
 end
 
 def handle_info(:avanti, 1) do
-#todo - deregistrazione
+SalumiereClientiRegistry.deregistra(self())
 {:stop, :normal, 0}
+end
 
 defp via_tuple(name) do
 {:via, Registry, {Cliente.Registry, name}}
