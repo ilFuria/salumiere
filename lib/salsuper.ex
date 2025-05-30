@@ -1,22 +1,24 @@
 defmodule SalSupervisor do
-use Supervisor
+use DynamicSupervisor
 
   def start_link do
-Supervisor.start_link(__MODULE__,[])
+DynamicSupervisor.start_link(__MODULE__,:ok,name: __MODULE__)
   end
 
-  def init([]) do
-  children=[
-worker(Salumiere,[])
-  ]
-
-supervise(children,strategy: :simple_one_for_one)
+  def init(:ok) do
+DynamicSupervisor.init(strategy: :one_for_one)
+end
+  def crea do
+spec=%{
+  id: Salumiere,
+  start: {Salumiere, :start_link, []},
+  restart: :transient,
+  type: :worker
+}
+DynamicSupervisor.start_child(__MODULE__,spec)
   end
-  def creaSalumiere do
-Supervisor.start_child(super_pid,[])
-  end
 
-  def chiudi(child_pid) do
-Supervisor.terminate_child(super_pid, child_pid)
+  def chiudi(pid) do
+Supervisor.terminate_child(__MODULE__, pid)
   end
   end

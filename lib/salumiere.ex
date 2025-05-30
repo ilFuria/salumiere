@@ -4,7 +4,7 @@ use GenServer
   def start_link do
 GenServer.start_link(__MODULE__,[])
   end
-  def init(_initData) do
+  def init(_) do
 {:ok, 0}
 end
   def attach(process_id) do
