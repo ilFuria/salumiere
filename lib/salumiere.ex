@@ -11,7 +11,7 @@ end
 GenServer.call(via_tuple(name),{:attach})
   end
   def advance(name) do
-GenServer.cast(via_tuple(name),{:pop})
+GenServer.cast(via_tuple(name),{:pop, name})
   end
   def handle_call({:attach},_from, state) do
 {:reply, state+1, state+1}
@@ -20,7 +20,8 @@ def handle_cast({:pop},0) do
 IO.puts("Errore: coda nulla!")
 {:noreply,0}
 end
-def handle_cast({:pop},state) when state>0 do
+def handle_cast({:pop, name},state) when state>0 do
+  SalumiereClientiRegistry.notifica(name)
   {:noreply,state-1}
   end
 

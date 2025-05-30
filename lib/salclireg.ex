@@ -27,21 +27,19 @@ stato=Map.update(stato, nuovo_salumiere, MapSet.new([cliente]), &MapSet.put(&1,c
 end
 
 def handle_cast({:deregistra, cliente}, stato) do
-stato=Enum.reduce(stato,%{}, fn{s,set}, acc ->
-nuovo_set=Enum.reject(set,fn nome ->
-Registry.lookup(Cliente.Registry, nome)
-|>Enum.any?(fn {pid, _}->pid==cliente end)
-end)
-Map.put(acc,s,nuovo_set)
-end)
-{:noreply, stato}
+nuovo_stato =
+    Enum.reduce(stato, %{}, fn {salumiere, set}, acc ->
+      Map.put(acc, salumiere, MapSet.delete(set, cliente))
+    end)
+
+  {:noreply, nuovo_stato}
 end
 
 def handle_cast({:notifica, salumiere}, stato) do
-clienti = Map.get(stato,salumiere, MapSet.new())
+clienti = Map.get(stato, salumiere, MapSet.new())
 Enum.each(clienti, fn nome ->
 case Registry.lookup(Cliente.Registry, nome) do
-[{pid, _}] -> send(pid, :avanti)
+[{pid, _}] -> send(pid, {:avanti, nome})
 [] -> :ignore
 end
 end)

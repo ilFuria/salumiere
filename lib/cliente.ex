@@ -17,12 +17,12 @@ def handle_cast({:accodati, numero},_state) do
 {:noreply, numero}
 end
 
-def handle_info(:avanti, stato) when stato>1 do
+def handle_info({:avanti, _nome}, stato) when stato>1 do
 {:noreply, stato-1}
 end
 
-def handle_info(:avanti, 1) do
-SalumiereClientiRegistry.deregistra(self())
+def handle_info({:avanti, nome}, 1) do
+SalumiereClientiRegistry.deregistra(nome)
 {:stop, :normal, 0}
 end
 
