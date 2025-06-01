@@ -13,13 +13,13 @@ defmodule ClienteTerminazioneTest do
 
   test "cliente con stato 1, dopo advance muore ed è rimosso dal registro" do
     # 1. Creo un salumiere
-     SalSupervisor.crea("gino")
+    SalSupervisor.crea("gino")
 
     # 2. Creo un cliente accodato al salumiere "gino"
-     ClienteSupervisor.crea("gianni", "gino")
+    ClienteSupervisor.crea("gianni", "gino")
 
     # 3. Imposto lo stato del cliente a 1
-     ClienteSupervisor.crea("mino", "gino")
+    ClienteSupervisor.crea("mino", "gino")
 
     # 5. Faccio advance (che manda :avanti → cliente va a 0 e muore)
     Salumiere.advance("gino")
